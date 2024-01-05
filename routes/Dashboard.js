@@ -72,11 +72,11 @@ router.post("/add" , Authentication , async (req , res) =>{
 
     const product = new Product({Name: name , Description : description , Price : price , Category: category , Subcategory : subcategory , type : type , imageURL : image})
     product.save();    
-    res.status(200).send("Product Added Successfully")
+    res.status(200).send({Check: true , msg:"Product Added Successfully"})
     
   } catch (error) {
     console.log(error);
-    res.send(`Nishant`);
+    res.status(200).send({Check: false , msg:"Product Added Unsuccessfully"})
   }
 })
 
