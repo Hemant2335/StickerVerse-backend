@@ -8,7 +8,7 @@ const PORT = 5000;
 // For body Parsing
 app.use(express.json());
 app.use(cors({
-  origin: ['https://theprintfrontend.vercel.app']// Allowed domains 
+  origin: ['https://theprintfrontend.vercel.app' , "http://localhost:3000"]// Allowed domains 
 }));
 // Connecting to Database
 ConnectToDatabase();
