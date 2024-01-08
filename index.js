@@ -25,7 +25,7 @@ app.use((err, req, res, next) => {
 
 app.use("/users" , require("./routes/Userauth"))
 app.use("/dashboard" , require("./routes/Dashboard"))
-
+app.use("/products" , require("./routes/Product"))
 app.get("/" , (req, res)=>{
   res.send("Welcome to ThePrint Backend")
 })
