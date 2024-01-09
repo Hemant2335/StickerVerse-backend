@@ -8,7 +8,7 @@ const CircularJSON = require("circular-json");
 const router = express.Router();
 
 
-router.get("/:searchparam", Authentication, async (req, res) => {
+router.get("/:searchparam",  async (req, res) => {
     try {
       const type = req.params.searchparam;
       console.log(type);
