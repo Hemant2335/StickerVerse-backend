@@ -52,6 +52,25 @@ router.get("/item/cart",  async (req, res) => {
   }
 });
 
+router.post("/item/deleteitem" , Authentication , async (req  ,res)=>{
+  try {
+    const {id} = req.body
+    const token = req.headers["auth"];
+    const decode = jwt.verify(token, jwtsecret);
+    const Email = decode.Email;
+    const user = await User.findOne({ Email: Email });
+    const cart = user.cart;
+    cart.splice(cart.findIndex(item => item.id === id), 1);
+    await user.save();
+    res.status(200).send({Check: true , msg:"Item removed Successfully"})
+  } catch (error) {
+    console.log(error);
+    res.status(200).send({Check: false , msg:"Item removed UnSuccessfully"})
+  }
+})
+
+
+
 
 
 module.exports = router;
