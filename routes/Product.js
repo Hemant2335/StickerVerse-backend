@@ -31,10 +31,16 @@ router.post("/item/addtocart" , Authentication , async (req  ,res)=>{
     const user = await User.findOne({ Email: Email });
     user.cart.push({Name: name , Description : description , Price : price , Category: category , Subcategory : subcategory , type : type , imageURL : image})
     await user.save();
-    res.status(200).send("Successfully Added to cart");
+    res.status(200).json({
+      Success: true,
+      Message: "Added to Cart Successfully",
+    });
   } catch (error) {
     console.log(error);
-    res.send("Cannot Added to cart")
+    res.status(500).json({
+      Success: false,
+      Message: "Cart Added Unsuccessfull",
+    });
   }
 })
 
