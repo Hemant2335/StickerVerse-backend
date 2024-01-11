@@ -24,23 +24,17 @@ router.get("/:searchparam",  async (req, res) => {
 
 router.post("/item/addtocart" , Authentication , async (req  ,res)=>{
   try {
-    const {name ,description , price,  category , subcategory, type, image} = req.body
+    const {name , price,   image} = req.body
     const token = req.headers["auth"];
     const decode = jwt.verify(token, jwtsecret);
     const Email = decode.Email;
     const user = await User.findOne({ Email: Email });
-    user.cart.push({Name: name , Description : description , Price : price , Category: category , Subcategory : subcategory , type : type , imageURL : image})
+    user.cart.push({Name: name , Price : price ,  imageURL : image})
     await user.save();
-    res.status(200).json({
-      Success: true,
-      Message: "Added to Cart Successfully",
-    });
+    res.status(200).send({Check: true , msg:"Added to Cart Successfully"})
   } catch (error) {
     console.log(error);
-    res.status(500).json({
-      Success: false,
-      Message: "Cart Added Unsuccessfull",
-    });
+    res.status(200).send({Check: false , msg:"Cannot Added to Cart "})
   }
 })
 
