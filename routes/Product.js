@@ -38,6 +38,20 @@ router.post("/item/addtocart" , Authentication , async (req  ,res)=>{
   }
 })
 
+router.get("/item/cart",  async (req, res) => {
+  try {
+    const token = req.headers["auth"];
+    const decode = jwt.verify(token, jwtsecret);
+    const Email = decode.Email;
+    const user = await User.findOne({ Email: Email });
+    const cart = user.cart;
+    res.status(200).send(cart);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Cart can't be fetched right now");
+  }
+});
+
 
 
 module.exports = router;
