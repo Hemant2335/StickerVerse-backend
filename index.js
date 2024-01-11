@@ -16,6 +16,7 @@ ConnectToDatabase();
 // Global Catches
 app.use((err, req, res, next) => {
   if (err) {
+    console.log(err);
     return res.status(500).send("Internal Error Occured");
   }
   next();
