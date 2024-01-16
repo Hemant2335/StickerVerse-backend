@@ -5,6 +5,7 @@ const jwtsecret = process.env.JWT_SECRET;
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const { ValidateAuthinput } = require("../middlewares/Middleware");
+const {Authentication} = require("../middlewares/Middleware")
 
 const router = express.Router();
 
@@ -87,5 +88,22 @@ router.post("/login", async (req, res) => {
     });
   }
 });
+
+// Fetch User data 
+
+router.get("/getuser" , Authentication , async(req , res)=>{
+  try {
+    const token = req.headers["auth"];
+    const decode = jwt.verify(token, jwtsecret);
+    const Email = decode.Email;
+    const user = await User.findOne({ Email: Email });
+    res.status(200).json({Check : true , User : {Name : user.Name , Email : Email , isAdmin : user.isAdmin}})
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({Check: false , msg:"Cannot Fetch User"})
+  }  
+  
+    
+})
 
 module.exports = router;
