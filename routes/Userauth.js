@@ -125,7 +125,7 @@ const Otpgenrator = ()=>{
 
 
 router.post('/verifyemail' , async(req , res) =>{
-  // Generate a Otp
+  // Generate a Otp 
   const otp = Otpgenrator();
   const userEmail = req.body.Email  
 
@@ -140,7 +140,7 @@ router.post('/verifyemail' , async(req , res) =>{
   // Sending the Email
   try {
     await transporter.sendMail(mailOptions);
-    res.status(200).send({Check : true , Msg : "OTP sent successfully"});
+    res.status(200).send({Check : true , Msg : "OTP sent successfully" , Code : otp});
   } catch (error) {
     console.log(error);
     res.send(500).json({Check : false , Msg : "Error Sending the Otp"})
