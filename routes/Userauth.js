@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const { ValidateAuthinput } = require("../middlewares/Middleware");
 const {Authentication} = require("../middlewares/Middleware")
+const nodemailer = require("nodemailer");
 
 const router = express.Router();
 
@@ -104,6 +105,46 @@ router.get("/getuser" , Authentication , async(req , res)=>{
   }  
   
     
+})
+
+// Email Verification links
+
+// Nodemailer configuration
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'stickerverse7@gmail.com',
+    pass: 'npzk rgzx mwki jgpy', 
+  },
+});
+
+const Otpgenrator = ()=>{
+  const otp = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000 ;
+  return otp;
+}
+
+
+router.post('/verifyemail' , async(req , res) =>{
+  // Generate a Otp
+  const otp = Otpgenrator();
+  const userEmail = req.body.Email  
+
+  // Mail options
+  const mailOptions = {
+    from: 'stickerverse7@gmail.com',
+    to: userEmail,
+    subject: 'Email Verification OTP',
+    text: `Your OTP for email verification is: ${otp}`,
+  };
+
+  // Sending the Email
+  try {
+    await transporter.sendMail(mailOptions);
+    res.status(200).send({Check : true , Msg : "OTP sent successfully"});
+  } catch (error) {
+    console.log(error);
+    res.send(500).json({Check : false , Msg : "Error Sending the Otp"})
+  }
 })
 
 module.exports = router;
