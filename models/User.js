@@ -5,6 +5,7 @@ const product = new Schema({
     Name : {type : String , required : true},
     Price : {type : Number , required : true},
     imageURL : {type : String , required : true},
+    size : {type : String , required : true}
 })
 
 const user = new Schema({

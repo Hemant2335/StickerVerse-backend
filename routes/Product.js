@@ -24,12 +24,12 @@ router.get("/:searchparam",  async (req, res) => {
 
 router.post("/item/addtocart" , Authentication , async (req  ,res)=>{
   try {
-    const {name , price,   image} = req.body
+    const {name , price,   image , size} = req.body
     const token = req.headers["auth"];
     const decode = jwt.verify(token, jwtsecret);
     const Email = decode.Email;
     const user = await User.findOne({ Email: Email });
-    user.cart.push({Name: name , Price : price ,  imageURL : image})
+    user.cart.push({Name: name , Price : price ,  imageURL : image , size : size})
     await user.save();
     res.status(200).send({Check: true , msg:"Added to Cart Successfully"})
   } catch (error) {
@@ -49,6 +49,17 @@ router.get("/item/cart",  async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).send("Cart can't be fetched right now");
+  }
+});
+
+router.get("/item/:itemid",  async (req, res) => {
+  try {
+    const itemid = req.params.itemid ;
+    const item = await Product.findOne({ _id: itemid });
+    res.status(200).json({Check : true ,Msg : "Successfully Fetched" ,item : item});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({Check : false , Msg : "Successfully Fetched"});
   }
 });
 
