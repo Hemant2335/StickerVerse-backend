@@ -4,6 +4,7 @@ const User = require("../models/User")
 const jwtsecret = process.env.JWT_SECRET;
 const jwt = require("jsonwebtoken");
 const Product = require("../models/Product")
+const Category = require("../models/Category")
 require("dotenv").config();
 const router = express.Router();
 
@@ -77,6 +78,15 @@ router.post("/item/deleteitem" , Authentication , async (req  ,res)=>{
   } catch (error) {
     console.log(error);
     res.status(200).send({Check: false , msg:"Item removed UnSuccessfully"})
+  }
+})
+
+router.get("/all/Category" , async(req ,res)=>{
+  try {
+    const cat = await Category.find();
+    res.status(200).json({Check: true , msg:"Category fetched Succesfully" , data : cat});
+  } catch (error) {
+    res.status(200).send({Check: false , msg:"Internal Server Error"})
   }
 })
 
