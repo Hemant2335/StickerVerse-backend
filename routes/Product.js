@@ -92,9 +92,9 @@ router.get("/all/Category" , async(req ,res)=>{
 
 router.get("/all/filter" , async(req , res) => {
   try {
-    const catname = req.params.category;
-    const Subcatname = req.params.subcategory;
-    const type = req.params.type;
+    const catname = req.query.category;
+    const Subcatname = req.query.subcategory;
+    const type = req.query.type;
     const query = {};
     if (catname) {
       query.Category = catname;
