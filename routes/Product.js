@@ -93,7 +93,7 @@ router.get("/all/Category" , async(req ,res)=>{
 router.get("/all/Category/:searchparam" , async(req , res) => {
   try {
     const catname = req.params.searchparam;
-    const cat = await Category.find({Name : catname});
+    const cat = await Product.find({Category : catname});
     res.status(200).json({Check: true , msg:"Category fetched Succesfully" , data : cat});
   } catch (error) {
     res.status(200).send({Check: false , msg:"Internal Server Error"})
