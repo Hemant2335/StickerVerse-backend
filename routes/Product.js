@@ -90,15 +90,18 @@ router.get("/all/Category" , async(req ,res)=>{
   }
 })
 
-router.get("/all/Category/:searchparam" , async(req , res) => {
+router.get("/all/filter" , async(req , res) => {
   try {
     const catname = req.params.searchparam;
-    const cat = await Product.find({Category : catname});
+    const Subcatname = req.params.searchparam;
+    const type = req.params.searchparam;
+    const cat = await Product.find({Category : catname , Subcategory : Subcatname , type : type});
     res.status(200).json({Check: true , msg:"Category fetched Succesfully" , data : cat});
   } catch (error) {
     res.status(200).send({Check: false , msg:"Internal Server Error"})
   }
 })
+
 
 router.get("/all/SubCategory/:searchparam" , async(req , res) => {
   try {
