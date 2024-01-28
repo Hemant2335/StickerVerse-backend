@@ -30,7 +30,7 @@ router.post("/item/addtocart" , Authentication , async (req  ,res)=>{
     const decode = jwt.verify(token, jwtsecret);
     const Email = decode.Email;
     const user = await User.findOne({ Email: Email });
-    const item = await User.findOne({cart : {Name: name , Price : price ,  imageURL : image , size : size }});
+    const item = await User.findOne({cart : {$elemMatch : {Name: name , Price : price ,  imageURL : image , size : size }}});
     if(item)
     {
       return res.status(200).send({Check: false , msg:"Item Already in Cart"})
