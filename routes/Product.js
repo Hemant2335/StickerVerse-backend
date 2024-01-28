@@ -60,7 +60,7 @@ router.get("/item/:itemid",  async (req, res) => {
     res.status(200).json({Check : true ,Msg : "Successfully Fetched" ,item : item});
   } catch (error) {
     console.log(error);
-    res.status(500).json({Check : false , Msg : "Successfully Fetched"});
+    res.status(500).json({Check : false , Msg : "Successfully Fetched here"});
   }
 });
 
