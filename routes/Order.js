@@ -1,5 +1,5 @@
 const express = require("express");
-const Order = require("../models/Orders");
+const Order = require("../models/Order");
 const User = require("../models/User");
 const {Authentication} = require("../middlewares/Middleware")
 
@@ -22,3 +22,5 @@ router.post('/addorder',Authentication, async (req, res) => {
       res.status(500).send("Internal Server Error");  
     }
   })
+
+  module.exports = router;

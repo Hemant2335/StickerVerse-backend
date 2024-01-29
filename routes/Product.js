@@ -24,10 +24,7 @@ router.get("/:searchparam", async (req, res) => {
 router.post("/item/addtocart", Authentication, async (req, res) => {
   try {
     const { name, price, image, size, quantity } = req.body;
-    const token = req.headers["auth"];
-    const decode = jwt.verify(token, jwtsecret);
-    const Email = decode.Email;
-    const user = await User.findOne({ Email: Email });
+    const user = req.user;
     const cart = user.cart;
     const item = cart.find((item) => item.Name === name && item.size === size);
     if (item) {
@@ -55,10 +52,7 @@ router.post("/item/addtocart", Authentication, async (req, res) => {
 
 router.get("/item/cart", async (req, res) => {
   try {
-    const token = req.headers["auth"];
-    const decode = jwt.verify(token, jwtsecret);
-    const Email = decode.Email;
-    const user = await User.findOne({ Email: Email });
+    const user = req.user;
     const cart = user.cart;
     res.status(200).send(cart);
   } catch (error) {
@@ -83,10 +77,7 @@ router.get("/item/:itemid", async (req, res) => {
 router.post("/item/deleteitem", Authentication, async (req, res) => {
   try {
     const { id } = req.body;
-    const token = req.headers["auth"];
-    const decode = jwt.verify(token, jwtsecret);
-    const Email = decode.Email;
-    const user = await User.findOne({ Email: Email });
+    const user = req.user
     const cart = user.cart;
     cart.splice(
       cart.findIndex((item) => item.id === id),

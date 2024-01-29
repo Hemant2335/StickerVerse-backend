@@ -28,6 +28,7 @@ app.use("/users" , require("./routes/Userauth"))
 app.use("/dashboard" , require("./routes/Dashboard"))
 app.use("/products" , require("./routes/Product"))
 app.use("/payment" , require("./routes/Payment"))
+app.use("/order" , require("./routes/Order"))
 app.get("/" , (req, res)=>{
   res.send("Welcome to ThePrint Backend")
 })
