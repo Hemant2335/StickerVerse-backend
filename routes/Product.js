@@ -43,7 +43,7 @@ router.post("/item/addtocart", Authentication, async (req, res) => {
 
 router.get("/item/cart", Authentication ,async (req, res) => {
   try {
-    const cart = await Cart.findOne({user : req.user.id});
+    const cart = await Cart.find({user : req.user.id});
     console.log(cart);
     res.status(200).send(cart);
   } catch (error) {
