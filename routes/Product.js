@@ -1,8 +1,6 @@
 const express = require("express");
 const { Authentication } = require("../middlewares/Middleware");
-const User = require("../models/User");
-const jwtsecret = process.env.JWT_SECRET;
-const jwt = require("jsonwebtoken");
+const Cart = require("../models/Cart");
 const Product = require("../models/Product");
 const Category = require("../models/Category");
 require("dotenv").config();
@@ -23,25 +21,18 @@ router.get("/:searchparam", async (req, res) => {
 
 router.post("/item/addtocart", Authentication, async (req, res) => {
   try {
-    const { name, price, image, size, quantity } = req.body;
-    const user = req.user;
-    const cart = user.cart;
-    const item = cart.find((item) => item.Name === name && item.size === size);
+    const { name, price, image, size, quantity , type } = req.body;
+    const user = req.user.id;
+    const item = await Cart.findOne({name : name , size : size , user : user});
     if (item) {
       item.quantity = item.quantity + quantity;
-      await user.save();
+      await item.save();
       return res
         .status(200)
         .send({ Check: true, msg: "Added to Cart Successfully" });
     } else {
-      user.cart.push({
-        Name: name,
-        Price: price,
-        imageURL: image,
-        size: size,
-        quantity: quantity,
-      });
-      await user.save();
+      const cart = new Cart({ user : user, type : type ,name : name , price : price , image : image , size : size , quantity : quantity})
+      await cart.save();
       res.status(200).send({ Check: true, msg: "Added to Cart Successfully" });
     }
   } catch (error) {
@@ -52,8 +43,8 @@ router.post("/item/addtocart", Authentication, async (req, res) => {
 
 router.get("/item/cart", Authentication ,async (req, res) => {
   try {
-    const user = req?.user;
-    const cart = user.cart;
+    const cart = await Cart.findOne({user : req.user.id});
+    console.log(cart);
     res.status(200).send(cart);
   } catch (error) {
     console.log(error);
@@ -77,14 +68,20 @@ router.get("/item/:itemid", async (req, res) => {
 router.post("/item/deleteitem", Authentication, async (req, res) => {
   try {
     const { id } = req.body;
-    const user = req.user
-    const cart = user.cart;
-    cart.splice(
-      cart.findIndex((item) => item.id === id),
-      1
+    const user = req.user.id;
+    const result = await Cart.findOneAndUpdate(
+      { user: user },
+      { $pull: { items: { _id: id } } },
+      { new: true } // Return the modified document after the update
     );
-    await user.save();
-    res.status(200).send({ Check: true, msg: "Item removed Successfully" });
+
+    if (result) {
+      // Item removed successfully
+      res.status(200).send({ Check: true, msg: "Item removed Successfully" });
+    } else {
+      // Item not found or already removed
+      res.status(200).send({ Check: false, msg: "Item not found or already removed" });
+    }
   } catch (error) {
     console.log(error);
     res.status(200).send({ Check: false, msg: "Item removed UnSuccessfully" });
