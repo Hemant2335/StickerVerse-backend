@@ -21,9 +21,9 @@ router.get("/:searchparam", async (req, res) => {
 
 router.post("/item/addtocart", Authentication, async (req, res) => {
   try {
-    const { name, price, image, size, quantity , type } = req.body;
+    const { name, price, image, size, quantity, type } = req.body;
     const user = req.user.id;
-    const item = await Cart.findOne({name : name , size : size , user : user});
+    const item = await Cart.findOne({ name: name, size: size, user: user });
     if (item) {
       item.quantity = item.quantity + quantity;
       await item.save();
@@ -31,7 +31,15 @@ router.post("/item/addtocart", Authentication, async (req, res) => {
         .status(200)
         .send({ Check: true, msg: "Added to Cart Successfully" });
     } else {
-      const cart = new Cart({ user : user, type : type ,name : name , price : price , image : image , size : size , quantity : quantity})
+      const cart = new Cart({
+        user: user,
+        type: type,
+        name: name,
+        price: price,
+        image: image,
+        size: size,
+        quantity: quantity,
+      });
       await cart.save();
       res.status(200).send({ Check: true, msg: "Added to Cart Successfully" });
     }
@@ -41,9 +49,9 @@ router.post("/item/addtocart", Authentication, async (req, res) => {
   }
 });
 
-router.get("/item/cart", Authentication ,async (req, res) => {
+router.get("/item/cart", Authentication, async (req, res) => {
   try {
-    const cart = await Cart.find({user : req.user.id});
+    const cart = await Cart.find({ user: req.user.id });
     console.log(cart);
     res.status(200).send(cart);
   } catch (error) {
@@ -69,11 +77,7 @@ router.post("/item/deleteitem", Authentication, async (req, res) => {
   try {
     const { id } = req.body;
     const user = req.user.id;
-    const result = await Cart.findOneAndUpdate(
-      { user: user },
-      { $pull: { items: { _id: id } } },
-      { new: true } // Return the modified document after the update
-    );
+    const result = await Cart.findOneAndDelete({ user: user });
 
     if (result) {
       // Item removed successfully
@@ -81,7 +85,9 @@ router.post("/item/deleteitem", Authentication, async (req, res) => {
       res.status(200).send({ Check: true, msg: "Item removed Successfully" });
     } else {
       // Item not found or already removed
-      res.status(200).send({ Check: false, msg: "Item not found or already removed" });
+      res
+        .status(200)
+        .send({ Check: false, msg: "Item not found or already removed" });
     }
   } catch (error) {
     console.log(error);
