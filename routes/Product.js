@@ -50,9 +50,9 @@ router.post("/item/addtocart", Authentication, async (req, res) => {
   }
 });
 
-router.get("/item/cart", async (req, res) => {
+router.get("/item/cart", Authentication ,async (req, res) => {
   try {
-    const user = req.user;
+    const user = req?.user;
     const cart = user.cart;
     res.status(200).send(cart);
   } catch (error) {
