@@ -3,13 +3,12 @@ const {Schema} = mongoose;
 
 const OrderSchema = new Schema({
     user : {type : mongoose.Schema.Types.ObjectId , ref : 'user'},
-    Name : {type: String , required : true,},
-    Price : {type: Number , required : true },
-    desc : {type: String , required : true},
-    type : {type: String , required : true},
-    img_url : {type: String , required : true},
-    Quantity : {type : Number , required : true},
-    Status : {type : String , required : true}
+    name : {type: String , required : true,},
+    price : {type: Number , required : true },
+    size : {type: String , required : true},
+    image : {type: String , required : true},
+    quantity : {type : Number , required : true},
+    status : {type : String , required : true}
   });
 
   const Order = mongoose.model('order',OrderSchema);
