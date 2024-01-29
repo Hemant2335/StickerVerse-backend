@@ -53,7 +53,10 @@ router.post("/upload", Authentication , upload.single('image'), async (req, res)
 router.post("/add" , Authentication , async (req , res) =>{
   try {
     const {name ,description , price,  category , subcategory, type, image} = req.body
-
+    if(req.user.isAdmin === false)
+    {
+      return res.status(200).send({Check: false , msg:"You are not authorized to add product"})
+    }
     const cat = await Category.findOne({Name : category});
     const subcat = await SubCategory.findOne({Name : subcategory});
     if(!cat)
