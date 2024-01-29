@@ -77,7 +77,7 @@ router.post("/item/deleteitem", Authentication, async (req, res) => {
 
     if (result) {
       // Item removed successfully
-      result.save();
+      await result.save();
       res.status(200).send({ Check: true, msg: "Item removed Successfully" });
     } else {
       // Item not found or already removed
