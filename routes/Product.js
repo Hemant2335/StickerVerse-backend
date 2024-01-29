@@ -77,7 +77,7 @@ router.post("/item/deleteitem", Authentication, async (req, res) => {
   try {
     const { id } = req.body;
     const user = req.user.id;
-    const result = await Cart.findOneAndDelete({ user: user });
+    const result = await Cart.findOneAndDelete({ user: user , _id : id });
 
     if (result) {
       // Item removed successfully
