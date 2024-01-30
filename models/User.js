@@ -7,6 +7,8 @@ const user = new Schema({
     Password : {type : String , required : true},
     Salt : {type : String , required : true},
     isAdmin : {type : Boolean , required : true},
+    Address : {type : String , required : true},
+    Phone : {type : Number , required : true}
 })
 
 const User = mongoose.model('user',user);
