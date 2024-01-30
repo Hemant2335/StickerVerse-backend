@@ -34,6 +34,8 @@ router.post("/signup", ValidateAuthinput, async (req, res) => {
       Password: NewPass,
       Salt: salt,
       isAdmin: false,
+      Address : null,
+      Phone : null
     });
     Newuser.save();
     res.status(200).json({
