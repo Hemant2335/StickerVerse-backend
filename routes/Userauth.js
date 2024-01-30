@@ -150,4 +150,21 @@ router.post('/verifyemail' , async(req , res) =>{
   }
 })
 
+
+// Updating the Address of user
+
+router.post("/updateaddress" , Authentication , async(req , res)=>{
+  try {
+    const {address , pincode , state , city} = req.body.Address;
+    const Address = `${address} , ${city} , ${state} , ${pincode}`;
+    const user = req.user;
+    user.Address = Address;
+    user.save();
+    res.status(200).json({Check : true , Msg : "Address Updated Successfully"})
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({Check : false , Msg : "Error Updating the Address"})
+  }
+})
+
 module.exports = router;
