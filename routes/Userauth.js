@@ -98,7 +98,7 @@ router.post("/login", async (req, res) => {
 router.get("/getuser" , Authentication , async(req , res)=>{
   try {
     const user = req.user;
-    res.status(200).json({Check : true , User : user})
+    res.status(200).json({Check : true , User : {Name : user.Name , Email : user.Email , Address : user.Address , Phone : user.Phone}})
   } catch (error) {
     console.log(error);
     res.status(500).send({Check: false , msg:"Cannot Fetch User"})
