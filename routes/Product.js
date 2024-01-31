@@ -80,7 +80,7 @@ router.post("/item/deleteitem", Authentication, async (req, res) => {
     const result = await Cart.findOneAndDelete({ user: user , _id : id });
     
     if (result) {
-      // Item removed successfully
+      // Item removed successfullynpm
       res.status(200).send({ Check: true, msg: "Item removed Successfully" });
     } else {
       // Item not found or already removed

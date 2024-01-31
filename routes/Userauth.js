@@ -152,8 +152,8 @@ router.post('/verifyemail' , async(req , res) =>{
 
 router.post("/updateaddress" , Authentication , async(req , res)=>{
   try {
-    const {address , pincode , state , city} = req.body;
-    const Address = `${address} , ${city} , ${state} , ${pincode}`;
+    const {address1 , address2 , pincode , state , city} = req.body;
+    const Address = `${address1} , ${address2} , ${city} , ${state} , ${pincode}`;
     const user = req.user;
     user.Address = Address;
     user.save();
