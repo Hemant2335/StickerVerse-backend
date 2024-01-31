@@ -14,6 +14,7 @@ const razorpay = new Razorpay({
 
 router.post("/invoice",Authentication,async (req, res) => {
   const { items ,email , name, address } = req.body;
+  console.log(items);
   try {
     const options = {
       type: "invoice",
