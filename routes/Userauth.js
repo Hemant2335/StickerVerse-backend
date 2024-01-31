@@ -5,8 +5,12 @@ const jwtsecret = process.env.JWT_SECRET;
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const { ValidateAuthinput } = require("../middlewares/Middleware");
-const {Authentication} = require("../middlewares/Middleware")
+const { Authentication } = require("../middlewares/Middleware");
 const nodemailer = require("nodemailer");
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const verifySid = process.env.TWILIO_VERIFY_SID;
+const client = require("twilio")(accountSid, authToken);
 
 const router = express.Router();
 
@@ -34,8 +38,8 @@ router.post("/signup", ValidateAuthinput, async (req, res) => {
       Password: NewPass,
       Salt: salt,
       isAdmin: false,
-      Address : null,
-      Phone : null
+      Address: null,
+      Phone: null,
     });
     Newuser.save();
     res.status(200).json({
@@ -75,8 +79,8 @@ router.post("/login", async (req, res) => {
       return res.status(200).json({
         Success: true,
         Message: token,
-        isAdmin : user.isAdmin,
-        Name : user.Name
+        isAdmin: user.isAdmin,
+        Name: user.Name,
       });
     } else {
       return res.status(200).json({
@@ -93,75 +97,101 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// Fetch User data 
+// Fetch User data
 
-router.get("/getuser" , Authentication , async(req , res)=>{
+router.get("/getuser", Authentication, async (req, res) => {
   try {
     const user = req.user;
-    res.status(200).json({Check : true , User : {Name : user.Name , Email : user.Email , Address : user.Address , Phone : user.Phone}})
+    res.status(200).json({
+      Check: true,
+      User: {
+        Name: user.Name,
+        Email: user.Email,
+        Address: user.Address,
+        Phone: user.Phone,
+      },
+    });
   } catch (error) {
     console.log(error);
-    res.status(500).send({Check: false , msg:"Cannot Fetch User"})
-  }  
-  
-    
-})
+    res.status(500).send({ Check: false, msg: "Cannot Fetch User" });
+  }
+});
 
 // Email Verification links
 
 // Nodemailer configuration
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  service: "gmail",
   auth: {
-    user: 'stickerverse7@gmail.com',
-    pass: process.env.GMAIL_PASSWORD, 
+    user: "stickerverse7@gmail.com",
+    pass: process.env.GMAIL_PASSWORD,
   },
 });
 
-const Otpgenrator = ()=>{
-  const otp = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000 ;
+const Otpgenrator = () => {
+  const otp = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
   return otp;
-}
+};
 
-
-router.post('/verifyemail' , async(req , res) =>{
-  // Generate a Otp 
+router.post("/verifyemail", async (req, res) => {
+  // Generate a Otp
   const otp = Otpgenrator();
-  const userEmail = req.body.Email  
+  const userEmail = req.body.Email;
 
   // Mail options
   const mailOptions = {
-    from: 'stickerverse7@gmail.com',
+    from: "stickerverse7@gmail.com",
     to: userEmail,
-    subject: 'Email Verification OTP',
+    subject: "Email Verification OTP",
     text: `Your OTP for email verification is: ${otp}`,
   };
 
   // Sending the Email
   try {
     await transporter.sendMail(mailOptions);
-    res.status(200).send({Check : true , Msg : "OTP sent successfully" , Code : otp});
+    res
+      .status(200)
+      .send({ Check: true, Msg: "OTP sent successfully", Code: otp });
   } catch (error) {
     console.log(error);
-    res.send(500).json({Check : false , Msg : "Error Sending the Otp"})
+    res.send(500).json({ Check: false, Msg: "Error Sending the Otp" });
   }
-})
-
+});
 
 // Updating the Address of user
 
-router.post("/updateaddress" , Authentication , async(req , res)=>{
+router.post("/updateaddress", Authentication, async (req, res) => {
   try {
-    const {address1 , address2 , pincode , state , city} = req.body;
+    const { address1, address2, pincode, state, city } = req.body;
     const Address = `${address1} , ${address2} , ${city} , ${state} , ${pincode}`;
     const user = req.user;
     user.Address = Address;
     user.save();
-    res.status(200).json({Check : true , Msg : "Address Updated Successfully"})
+    res.status(200).json({ Check: true, Msg: "Address Updated Successfully" });
   } catch (error) {
     console.log(error);
-    res.status(500).json({Check : false , Msg : "Error Updating the Address"})
+    res.status(500).json({ Check: false, Msg: "Error Updating the Address" });
   }
-})
+});
+
+
+// Updating the Phone Number of user
+
+router.post("/updatephone", Authentication, async (req, res) => {
+  try {
+    const { phone } = req.body;
+    const user = req.user;
+    user.Phone = phone;
+    user.save();
+    res
+      .status(200)
+      .json({ Check: true, Msg: "Phone Number Updated Successfully" });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ Check: false, Msg: "Error Updating the Phone Number" });
+  }
+});
 
 module.exports = router;
