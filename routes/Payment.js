@@ -13,7 +13,7 @@ const razorpay = new Razorpay({
 // Generate Invoice route
 
 router.post("/invoice",Authentication,async (req, res) => {
-  const { items ,email , name, address } = req.body;
+  const { items ,email , name, address ,phone } = req.body;
   console.log(items);
   try {
     const options = {
@@ -21,7 +21,7 @@ router.post("/invoice",Authentication,async (req, res) => {
       description: `Invoice for the month of January 2020`,
       customer: {
         name: name,
-        contact: 9000090000,
+        contact: phone,
         email: email,
         billing_address: {
           line1: address.split(",")[0],
