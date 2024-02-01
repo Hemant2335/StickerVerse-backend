@@ -9,7 +9,8 @@ const router = express.Router();
 
 router.post("/addorder", Authentication, async (req, res) => {
   try {
-    const { name, price, image, size, quantity , status , address , type} =  req.body;
+    const { name, price, image, size, quantity, status, address, type } =
+      req.body;
     const order = new Order({
       name,
       price,
@@ -47,34 +48,55 @@ router.get("/fetchallordersadmin", Authentication, async (req, res) => {
   try {
     const user = req.user;
     console.log(user);
-    if(user.isAdmin){
+    if (user.isAdmin) {
       const orders = await Order.find();
       const data = orders.map(async (order) => {
-        const userdata  = await User.findById(order.user);
+        const userdata = await User.findById(order.user);
         return {
-          name : order.name,
-          price : order.price,
-          image : order.image,
-          size : order.size,
-          quantity : order.quantity,
-          status : order.status,
-          type : order.type,
-          user : userdata,
-          address : order.address,
-        }
+          name: order.name,
+          price: order.price,
+          image: order.image,
+          size: order.size,
+          quantity: order.quantity,
+          status: order.status,
+          type: order.type,
+          user: userdata,
+          address: order.address,
+        };
       });
       const response = await Promise.all(data);
       console.log(response);
       res.status(200).json(response);
-    }
-    else{
+    } else {
       res.status(401).send("Not Authorized");
     }
-    
   } catch (error) {
     console.log(error);
     res.status(500).send("Internal Server Error");
   }
-})
+});
+
+// Route 4 : To update the status of the order
+
+router.put("/updatestatus/:id", Authentication, async (req, res) => {
+  if (!req.user.isAdmin) {
+    return res.status(401).send("Not Authorized");
+  } else {
+    try {
+      const { status } = req.body;
+      const order = await Order.findById(req.params.id);
+      if (order) {
+        order.status = status;
+        const updatedorder = await order.save();
+        res.json(updatedorder);
+      } else {
+        res.status(404).send("Order not found");
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(500).send("Internal Server Error");
+    }
+  }
+});
 
 module.exports = router;
