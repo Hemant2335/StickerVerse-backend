@@ -9,7 +9,9 @@ const OrderSchema = new Schema({
     image : {type: String , required : true},
     quantity : {type : Number , required : true},
     status : {type : String , required : true},
-    type : {type : String , required : true}  
+    type : {type : String , required : true},
+    date : {type : Date , default : Date.now},
+    address : {type : String , required : true},
   });
 
   const Order = mongoose.model('order',OrderSchema);
