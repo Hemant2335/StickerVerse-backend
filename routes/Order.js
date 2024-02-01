@@ -53,6 +53,7 @@ router.get("/fetchallordersadmin", Authentication, async (req, res) => {
       const data = orders.map(async (order) => {
         const userdata = await User.findById(order.user);
         return {
+          _id: order._id,
           name: order.name,
           price: order.price,
           image: order.image,
