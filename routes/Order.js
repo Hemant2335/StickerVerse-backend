@@ -89,7 +89,7 @@ router.put("/updatestatus/:id", Authentication, async (req, res) => {
       if (order) {
         order.status = status;
         const updatedorder = await order.save();
-        res.json(updatedorder);
+        res.status(200).json({ Check: true, Msg: "Successfully Fetched" });
       } else {
         res.status(404).send("Order not found");
       }
