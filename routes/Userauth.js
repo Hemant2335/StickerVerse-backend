@@ -109,6 +109,7 @@ router.get("/getuser", Authentication, async (req, res) => {
         Email: user.Email,
         Address: user.Address,
         Phone: user.Phone,
+        isAdmin: user.isAdmin,
       },
     });
   } catch (error) {
