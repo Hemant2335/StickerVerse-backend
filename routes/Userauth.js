@@ -134,6 +134,27 @@ const Otpgenrator = () => {
   return otp;
 };
 
+// Admin order Notification
+router.post("/adminnotify", Authentication, async (req, res) => {
+  const { name, email } = req.body;
+  const mailOptions = {
+    from: "stickerverse7@gmail.com",
+    to: "stickerverse7@gmail.com",
+    subject: "New Order Notification",
+    text: "You have a new order from " + name + " with email " + email,
+  };
+  // Sending the Email
+  try {
+    await transporter.sendMail(mailOptions);
+    res
+      .status(200)
+      .send({ Check: true, Msg: "Notification sent successfully"});
+  } catch (error) {
+    console.log(error);
+    res.send(500).json({ Check: false, Msg: "Error Sending the Notification" });
+  }
+});
+
 router.post("/verifyemail", async (req, res) => {
   // Generate a Otp
   const otp = Otpgenrator();
@@ -174,7 +195,6 @@ router.post("/updateaddress", Authentication, async (req, res) => {
     res.status(500).json({ Check: false, Msg: "Error Updating the Address" });
   }
 });
-
 
 // Updating the Phone Number of user
 
