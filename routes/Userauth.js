@@ -155,6 +155,28 @@ router.post("/adminnotify", Authentication, async (req, res) => {
   }
 });
 
+// User order status Notification
+router.post("/notifyuser", Authentication, async (req, res) => {
+  const email = req.user.Email;
+  const { name, status } = req.body;
+  const mailOptions = {
+    from: "stickerverse7@gmail.com",
+    to: email,
+    subject: "Order Status Update",
+    text: "Your Order with name " + name + " has been " + status,
+  };
+  // Sending the Email
+  try {
+    await transporter.sendMail(mailOptions);
+    res
+      .status(200)
+      .send({ Check: true, Msg: "Notification sent successfully"});
+  } catch (error) {
+    console.log(error);
+    res.send(500).json({ Check: false, Msg: "Error Sending the Notification" });
+  }
+});
+
 router.post("/verifyemail", async (req, res) => {
   // Generate a Otp
   const otp = Otpgenrator();
