@@ -1,12 +1,11 @@
 import express from "express";
-const {Authentication} = require("../middlewares/Middleware")
-const multer = require('multer');
-const cloudinary = require('cloudinary');
-const Category = require("../models/Category")
-const SubCategory = require("../models/SubCategory")
-const Product = require("../models/Product")
+import { Authentication } from "middlewares/Middleware";
+import multer from "multer";
+import { PrismaClient } from "@prisma/client";
+import cloudinary from "cloudinary";
 require("dotenv").config();
 const router = express.Router();
+const prisma  = new PrismaClient();
 
 cloudinary.v2.config({
   cloud_name: process.env.CLODINARY_CLOUD_NAME,
@@ -25,13 +24,13 @@ router.post("/upload", Authentication , upload.single('image'), async (req, res)
     let Check = false;
 
     // Convert the buffer to a readable stream
-    const readableStream = cloudinary.v2.uploader.upload_stream({ folder: 'uploads' }, (error : Error, result :) => {
+    const readableStream = cloudinary.v2.uploader.upload_stream({ folder: 'uploads' }, (error,result) => {
       if (error) {
         console.error('Upload error:', error);
         res.status(400).send({ Check: Check, error: "Some Error Occurred" });
       } else {
         Check = true;
-        const imageUrl = result.secure_url;
+        const imageUrl = result?.secure_url;
         res.status(200).send({ Check: Check, status: 'Upload successful', imageUrl: imageUrl });
       }
     });
@@ -46,32 +45,36 @@ router.post("/upload", Authentication , upload.single('image'), async (req, res)
   }
 });
 
+interface Product {
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  subcategory: string;
+  type: string;
+  image: string;
+}
+
 
 router.post("/add" , Authentication , async (req , res) =>{
   try {
-    const {name ,description , price,  category , subcategory, type, image} = req.body
-    if(req.user.isAdmin === false)
+    const {name ,description , price,  category , subcategory, type, image} : Product= req.body
+    if(req.body.user.isAdmin === false)
     {
       return res.status(200).send({Check: false , msg:"You are not authorized to add product"})
     }
-    const cat = await Category.findOne({Name : category});
-    const subcat = await SubCategory.findOne({Name : subcategory});
+    const cat = await prisma.category.findFirst({where : {Name : subcategory}});
+    const subcat = await prisma.subcategory.findFirst({where : {Name : subcategory}});
     if(!cat)
     {
-       const newcat =  new Category({Name : category});
-       await newcat.save();
+       const newcat =  await prisma.category.create({data : {Name : category}}) ;
     }
     if(!subcat)
     {
-      const newsubcat = new SubCategory({Name : subcategory});
-      await newsubcat.save();   
-      const cate = await Category.findOne({Name : category});
-      cate.subcategory.push({objectid : newsubcat.id , Name : newsubcat.Name})
-      await cate.save();
+      const newsubcat = await prisma.subcategory.create({data : {Name : subcategory , categoryId : cat?.id || 0}});
     }
 
-    const product = new Product({Name: name , Description : description , Price : price , Category: category , Subcategory : subcategory , type : type , imageURL : image})
-    product.save();    
+    const product = await prisma.product.create({data : {Name: name , Description : description , Price : price , Category: category , Subcategory : subcategory , type : type , imageURL : image}}) ; 
     res.status(200).send({Check: true , msg:"Product Added Successfully"})
     
   } catch (error) {
