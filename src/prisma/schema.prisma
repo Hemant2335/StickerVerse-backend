@@ -1,0 +1,90 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Defining a Simple User model 
+
+model User {
+  id Int @id @default(autoincrement())
+  Name String
+  Email String @unique
+  Password String
+  Salt String
+  isAdmin Boolean
+  Address String?
+  Phone Int?  // Add question mark to make it optional 
+  order Order[] // Added a Array of Orders
+  cart Cart[] // Added a Array of CartItems
+}
+
+// Defining a Model for the Order 
+
+model Order{
+  id Int @id @default(autoincrement())
+  name String
+  price Int
+  size String
+  image String
+  quantity Int
+  status String
+  type String
+  date DateTime @default(now())
+  address String
+  userId Int
+  user User @relation(fields: [userId] , references: [id])
+}
+
+// Defining a model for the Cart
+
+model Cart{
+  id Int @id @default(autoincrement())
+  name String
+  price Int 
+  size String
+  image String
+  quantity Int
+  type String
+  userId Int
+  user User @relation(fields: [userId] , references: [id])
+}
+
+// Defining the model for the Category
+// Here we have done One to many relation establishment
+model Category{
+  id Int @id @default(autoincrement())
+  Name String
+  subcategory Subcategory[]
+}
+
+// Defining the model for the Subcategory
+model Subcategory{
+  id Int @id @default(autoincrement())
+  Name String
+  categoryId Int // Stores the Id of the Category under which this Subcategory exists
+  category Category @relation(fields: [categoryId], references: [id])  // this is used to set relation between the Subcategory Id field and categoryId
+}
+
+// 
+model Product{
+  id Int @id @default(autoincrement())
+  Name String
+  Description String
+  Price Int
+  Category String
+  Subcategory String
+  type String
+  imageURL String
+}
+
+model Type{
+  id Int @id @default(autoincrement())
+  Name String
+}
