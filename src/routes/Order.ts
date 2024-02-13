@@ -1,8 +1,7 @@
-const express = require("express");
-const Order = require("../models/Order");
-const User = require("../models/User");
-const { Authentication } = require("../middlewares/Middleware");
-
+import express from "express";
+import { Authentication } from "middlewares/Middleware";
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
 const router = express.Router();
 
 // Route 1 : To create a order entry in user data
@@ -11,7 +10,7 @@ router.post("/addorder", Authentication, async (req, res) => {
   try {
     const { name, price, image, size, quantity, status, address, type } =
       req.body;
-    const order = new Order({
+    const order = await prisma.order.create({data: {
       name,
       price,
       image,
@@ -20,12 +19,11 @@ router.post("/addorder", Authentication, async (req, res) => {
       status,
       type,
       address,
-      user: req.user.id,
-    });
-    const savedorder = await order.save();
-    res.json(savedorder);
+      user: req.body.user.id,
+    }})
+    res.json(order);
   } catch (error) {
-    console.error(error.message);
+    console.log(error);
     res.status(500).send("Internal Server Error");
   }
 });
@@ -34,10 +32,10 @@ router.post("/addorder", Authentication, async (req, res) => {
 
 router.get("/fetchallorders", Authentication, async (req, res) => {
   try {
-    const orders = await Order.find({ user: req.user.id });
+    const orders = await prisma.order.findMany({where : {userId : req.body.user.id}});
     res.json(orders);
   } catch (error) {
-    console.error(error.message);
+    console.log(error);
     res.status(500).send("Internal Server Error");
   }
 });
@@ -46,14 +44,14 @@ router.get("/fetchallorders", Authentication, async (req, res) => {
 
 router.get("/fetchallordersadmin", Authentication, async (req, res) => {
   try {
-    const user = req.user;
+    const user = req.body.user;
     console.log(user);
     if (user.isAdmin) {
-      const orders = await Order.find();
+      const orders = await prisma.order.findMany();
       const data = orders.map(async (order) => {
-        const userdata = await User.findById(order.user);
+        const userdata = await prisma.user.findUnique({where : {id : order.userId}}) ;
         return {
-          _id: order._id,
+          _id: order.id,
           name: order.name,
           price: order.price,
           image: order.image,
@@ -80,15 +78,15 @@ router.get("/fetchallordersadmin", Authentication, async (req, res) => {
 // Route 4 : To update the status of the order
 
 router.put("/updatestatus/:id", Authentication, async (req, res) => {
-  if (!req.user.isAdmin) {
+  const id = parseInt(req.params.id);
+  if (!req.body.user.isAdmin) {
     return res.status(401).send("Not Authorized");
   } else {
     try {
       const { status } = req.body;
-      const order = await Order.findById(req.params.id);
+      const order = await prisma.order.findUnique({where : {id : id}}) ;
       if (order) {
-        order.status = status;
-        const updatedorder = await order.save();
+        const updateorder = await prisma.order.update({where : {id : id}, data : {status : status}});
         res.status(200).json({ Check: true, Msg: "Successfully Fetched" });
       } else {
         res.status(404).send("Order not found");
