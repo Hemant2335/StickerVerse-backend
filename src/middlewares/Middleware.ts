@@ -3,7 +3,8 @@ import { env } from "process";
 const jwtsecret : Secret = env.JWT_SECRET || "";
 import zod from "zod";
 import {Response , Request  , NextFunction} from "express";
-
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
 
 // Zod Schema
 
@@ -24,7 +25,7 @@ const Authentication = async (req : Request, res : Response, next : NextFunction
       return res.send("Invalid token");
     } else {
       const Email = decode.Email;
-      const user = await User.findOne({ Email: Email });
+      const user = await prisma.user.findUnique({where : {Email : Email}});
       if (!user) {
         return res.send("Invalid token");
       } else {

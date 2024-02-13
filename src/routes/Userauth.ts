@@ -2,13 +2,14 @@ import bcrypt from "bcrypt";
 require("dotenv").config();
 import {env} from "process";
 import jwt, { Secret } from "jsonwebtoken";
+import { Authentication } from "middlewares/Middleware";
 import nodemailer from "nodemailer";
 import { PrismaClient } from "@prisma/client";
 import {Response , Request , Router} from "express";
 const prisma = new PrismaClient();
 import { ValidateAuthinput } from "middlewares/Middleware";
 const jwtsecret : Secret = env.JWT_SECRET || "";
-
+const router = Router();
 // Signup Endpoint , No authentication required
 router.post("/signup", ValidateAuthinput, async (req: Request, res : Response) => {
   try {
@@ -57,7 +58,7 @@ router.post("/login", async (req: Request, res : Response) => {
     const Email = req.body.Email;
     const Password = req.body.Password;
     // Checking if the User Exits
-    const user = await User.findOne({ Email: Email });
+    const user = await prisma.user.findUnique({ where: { Email: Email } });
     if (!user) {
       return res.status(400).json({
         Success: false,
