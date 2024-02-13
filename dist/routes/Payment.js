@@ -7,7 +7,7 @@ const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
 const Razorpay = require("razorpay");
 require("dotenv").config();
-const Middleware_1 = require("middlewares/Middleware");
+const Middleware_1 = require("../middlewares/Middleware");
 // Create an instance of Razorpay
 const razorpay = new Razorpay({
     key_id: process.env.RAZOR_PAY_API_ID,
@@ -59,9 +59,9 @@ router.post("/invoice", Middleware_1.Authentication, async (req, res) => {
 router.post("/checkout", Middleware_1.Authentication, async (req, res) => {
     try {
         const options = {
-            amount: 20, // Payment amount in paise or cents
-            currency: "INR", // Currency code
-            receipt: "order_receipt", // Your unique order ID or receipt
+            amount: 20,
+            currency: "INR",
+            receipt: "order_receipt",
             payment_capture: 1, // Auto-capture payments
         };
         const response = await razorpay.orders.create(options);

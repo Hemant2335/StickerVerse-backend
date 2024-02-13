@@ -2,7 +2,7 @@ import express from "express";
 const router = express.Router();
 const Razorpay = require("razorpay");
 require("dotenv").config();
-import { Authentication } from "middlewares/Middleware";
+import { Authentication } from "../middlewares/Middleware";
 
 // Create an instance of Razorpay
 const razorpay = new Razorpay({

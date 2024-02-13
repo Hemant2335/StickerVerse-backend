@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const Middleware_1 = require("middlewares/Middleware");
+const Middleware_1 = require("../middlewares/Middleware");
 const multer_1 = __importDefault(require("multer"));
 const client_1 = require("@prisma/client");
 const cloudinary_1 = __importDefault(require("cloudinary"));

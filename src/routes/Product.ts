@@ -1,5 +1,5 @@
 import express from "express";
-import { Authentication } from "middlewares/Middleware";
+import { Authentication } from "../middlewares/Middleware";
 import { PrismaClient } from "@prisma/client";
 require("dotenv").config();
 const router = express.Router();

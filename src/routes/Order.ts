@@ -1,5 +1,5 @@
 import express from "express";
-import { Authentication } from "middlewares/Middleware";
+import { Authentication } from "../middlewares/Middleware";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -42,13 +42,27 @@ router.get("/fetchallorders", Authentication, async (req, res) => {
 
 // Route 3 : To fetch All the Orders (Admin only)
 
+interface Order{
+  id : number
+  name: String
+  price: number
+  size: String
+  image: String
+  quantity: number
+  status: String
+  type: String
+  date: Date
+  address: String
+  userId: number
+}
+
 router.get("/fetchallordersadmin", Authentication, async (req, res) => {
   try {
     const user = req.body.user;
     console.log(user);
     if (user.isAdmin) {
       const orders = await prisma.order.findMany();
-      const data = orders.map(async (order) => {
+      const data = orders.map(async (order: Order) => {
         const userdata = await prisma.user.findUnique({where : {id : order.userId}}) ;
         return {
           _id: order.id,

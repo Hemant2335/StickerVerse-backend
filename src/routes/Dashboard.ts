@@ -1,5 +1,5 @@
 import express from "express";
-import { Authentication } from "middlewares/Middleware";
+import { Authentication } from "../middlewares/Middleware";
 import multer from "multer";
 import { PrismaClient } from "@prisma/client";
 import cloudinary from "cloudinary";

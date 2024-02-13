@@ -7,16 +7,15 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 require("dotenv").config();
 const process_1 = require("process");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const Middleware_1 = require("middlewares/Middleware");
+const Middleware_1 = require("../middlewares/Middleware");
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const client_1 = require("@prisma/client");
 const express_1 = require("express");
 const prisma = new client_1.PrismaClient();
-const Middleware_2 = require("middlewares/Middleware");
 const jwtsecret = process_1.env.JWT_SECRET || "";
 const router = (0, express_1.Router)();
 // Signup Endpoint , No authentication required
-router.post("/signup", Middleware_2.ValidateAuthinput, async (req, res) => {
+router.post("/signup", Middleware_1.ValidateAuthinput, async (req, res) => {
     try {
         const Email = req.body.Email;
         const Name = req.body.Name;

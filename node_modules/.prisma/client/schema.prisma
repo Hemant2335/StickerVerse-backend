@@ -60,7 +60,7 @@ model Cart{
 // Here we have done One to many relation establishment
 model Category{
   id Int @id @default(autoincrement())
-  Name String
+  Name String @unique
   subcategory Subcategory[]
 }
 

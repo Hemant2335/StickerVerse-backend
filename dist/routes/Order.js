@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const Middleware_1 = require("middlewares/Middleware");
+const Middleware_1 = require("../middlewares/Middleware");
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const router = express_1.default.Router();
@@ -41,7 +41,6 @@ router.get("/fetchallorders", Middleware_1.Authentication, async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-// Route 3 : To fetch All the Orders (Admin only)
 router.get("/fetchallordersadmin", Middleware_1.Authentication, async (req, res) => {
     try {
         const user = req.body.user;

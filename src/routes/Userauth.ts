@@ -2,12 +2,11 @@ import bcrypt from "bcrypt";
 require("dotenv").config();
 import {env} from "process";
 import jwt, { Secret } from "jsonwebtoken";
-import { Authentication } from "middlewares/Middleware";
+import { Authentication , ValidateAuthinput } from "../middlewares/Middleware";
 import nodemailer from "nodemailer";
 import { PrismaClient } from "@prisma/client";
 import {Response , Request , Router} from "express";
 const prisma = new PrismaClient();
-import { ValidateAuthinput } from "middlewares/Middleware";
 const jwtsecret : Secret = env.JWT_SECRET || "";
 const router = Router();
 // Signup Endpoint , No authentication required
