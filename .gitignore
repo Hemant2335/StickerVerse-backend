@@ -1,7 +1,6 @@
 # .gitignore
 .env
 .vercel
-
 node_modules
 
 # Local Netlify folder
