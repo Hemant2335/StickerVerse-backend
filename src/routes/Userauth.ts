@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 require("dotenv").config();
 import {env} from "process";
 import jwt, { Secret } from "jsonwebtoken";

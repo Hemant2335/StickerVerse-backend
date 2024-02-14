@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const bcrypt_1 = __importDefault(require("bcrypt"));
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 require("dotenv").config();
 const process_1 = require("process");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -29,8 +29,8 @@ router.post("/signup", Middleware_1.ValidateAuthinput, async (req, res) => {
             });
         }
         // Creating a Salt
-        const salt = await bcrypt_1.default.genSalt(10);
-        const NewPass = await bcrypt_1.default.hash(Password, salt);
+        const salt = await bcryptjs_1.default.genSalt(10);
+        const NewPass = await bcryptjs_1.default.hash(Password, salt);
         const Newuser = await prisma.user.create({
             data: {
                 Name: Name,
@@ -69,7 +69,7 @@ router.post("/login", async (req, res) => {
             });
         }
         const salt = user.Salt;
-        const HashedPassword = await bcrypt_1.default.hash(Password, salt);
+        const HashedPassword = await bcryptjs_1.default.hash(Password, salt);
         if (HashedPassword === user.Password) {
             const token = jsonwebtoken_1.default.sign({ Email: Email, isAdmin: user.isAdmin }, jwtsecret);
             return res.status(200).json({
