@@ -1,8 +1,17 @@
 {
   "scripts": {
-    "start": "node ./dist/index.js",
-    "dev": "nodemon ./dist/index.js"
-  },
+    "start": "nodemon src/index.ts",
+    "build": "prisma generate --schema=./src/prisma/schema.prisma && rimraf dist && tsc",
+    "ts.check": "tsc --project tsconfig.json",
+    "add-build": "git add dist",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "prisma generate --schema=./src/prisma/schema.prisma"
+    },
+    "pre-commit": [
+      "ts.check",
+      "build",
+      "add-build"
+  ],
   "dependencies": {
     "@prisma/client": "^5.9.1",
     "bcrypt": "^5.1.1",
@@ -32,7 +41,9 @@
     "@types/multer": "^1.4.11",
     "@types/node": "^20.11.17",
     "@types/nodemailer": "^6.4.14",
+    "pre-commit": "^1.2.2",
     "prisma": "^5.9.1",
+    "rimraf": "^5.0.5",
     "ts-node": "^10.9.2"
   }
 }
