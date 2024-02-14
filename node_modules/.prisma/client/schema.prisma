@@ -20,7 +20,7 @@ model User {
   Salt String
   isAdmin Boolean
   Address String?
-  Phone Int?  // Add question mark to make it optional 
+  Phone String?  // Add question mark to make it optional 
   order Order[] // Added a Array of Orders
   cart Cart[] // Added a Array of CartItems
 }

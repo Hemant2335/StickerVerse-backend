@@ -206,8 +206,7 @@ router.post("/updateaddress", Middleware_1.Authentication, async (req, res) => {
         const { address1, address2, pincode, state, city } = req.body;
         const Address = `${address1} , ${address2} , ${city} , ${state} , ${pincode}`;
         const user = req.body.user;
-        user.Address = Address;
-        user.save();
+        const updateduser = await prisma.user.update({ where: { id: user.id }, data: { Address: Address } });
         res.status(200).json({ Check: true, Msg: "Address Updated Successfully" });
     }
     catch (error) {
@@ -218,10 +217,9 @@ router.post("/updateaddress", Middleware_1.Authentication, async (req, res) => {
 // Updating the Phone Number of user
 router.post("/updatephone", Middleware_1.Authentication, async (req, res) => {
     try {
-        const { phone } = req.body;
+        const phone = req.body.phone;
         const user = req.body.user;
-        user.Phone = phone;
-        user.save();
+        const updateduser = await prisma.user.update({ where: { id: user.id }, data: { Phone: phone } });
         res
             .status(200)
             .json({ Check: true, Msg: "Phone Number Updated Successfully" });
