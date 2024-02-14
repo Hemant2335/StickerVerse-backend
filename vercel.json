@@ -1,35 +1,16 @@
 {
   "version": 2,
   "builds": [
-    {
-      "src": "src/index.ts",
-      "use": "@vercel/node"
-    }
+      {
+          "src": "dist/index.js",
+          "use": "@vercel/node",
+          "config": { "includeFiles": ["dist/**"] }
+      }
   ],
   "routes": [
-    {
-      "src": "/users",
-      "dest": "src/routes/Userauth"
-    },
-    {
-      "src": "/dashboard",
-      "dest": "src/routes/Dashboard"
-    },
-    {
-      "src": "/products",
-      "dest":"src/routes/Product"
-    },
-    {
-      "src" : "/payment",
-      "dest" : "src/routes/Payment"
-    },
-    {
-      "src": "/order",
-      "dest" : "src/routes/Order"
-    },
-    {
-      "src" : "/",
-      "dest" : "/"
-    }
+      {
+          "src": "/(.*)",
+          "dest": "dist/index.js"
+      }
   ]
 }

@@ -59,9 +59,9 @@ router.post("/invoice", Middleware_1.Authentication, async (req, res) => {
 router.post("/checkout", Middleware_1.Authentication, async (req, res) => {
     try {
         const options = {
-            amount: 20,
-            currency: "INR",
-            receipt: "order_receipt",
+            amount: 20, // Payment amount in paise or cents
+            currency: "INR", // Currency code
+            receipt: "order_receipt", // Your unique order ID or receipt
             payment_capture: 1, // Auto-capture payments
         };
         const response = await razorpay.orders.create(options);
