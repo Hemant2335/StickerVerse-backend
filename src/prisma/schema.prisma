@@ -67,7 +67,7 @@ model Category{
 // Defining the model for the Subcategory
 model Subcategory{
   id Int @id @default(autoincrement())
-  Name String
+  Name String @unique
   categoryId Int // Stores the Id of the Category under which this Subcategory exists
   category Category @relation(fields: [categoryId], references: [id])  // this is used to set relation between the Subcategory Id field and categoryId
 }

@@ -4,7 +4,7 @@ const jwtsecret : Secret = env.JWT_SECRET || "";
 import zod from "zod";
 import {Response , Request  , NextFunction} from "express";
 import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+const prisma  = new PrismaClient();
 
 // Zod Schema
 

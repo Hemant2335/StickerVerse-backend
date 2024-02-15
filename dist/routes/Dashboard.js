@@ -22,7 +22,10 @@ const upload = (0, multer_1.default)({ storage: storage });
 router.post("/upload", Middleware_1.Authentication, upload.single('image'), async (req, res) => {
     try {
         // Access the uploaded file from req.file
-        const fileBuffer = req.body.file.buffer;
+        if (req.file === undefined) {
+            return;
+        }
+        const fileBuffer = req.file.buffer;
         let Check = false;
         // Convert the buffer to a readable stream
         const readableStream = cloudinary_1.default.v2.uploader.upload_stream({ folder: 'uploads' }, (error, result) => {
@@ -51,15 +54,20 @@ router.post("/add", Middleware_1.Authentication, async (req, res) => {
         if (req.body.user.isAdmin === false) {
             return res.status(200).send({ Check: false, msg: "You are not authorized to add product" });
         }
-        const cat = await prisma.category.findFirst({ where: { Name: subcategory } });
-        const subcat = await prisma.subcategory.findFirst({ where: { Name: subcategory } });
+        const cat = await prisma.category.findUnique({ where: { Name: category } });
+        const subcat = await prisma.subcategory.findUnique({ where: { Name: subcategory } });
         if (!cat) {
             const newcat = await prisma.category.create({ data: { Name: category } });
+            if (!subcat) {
+                const newsubcat = await prisma.subcategory.create({ data: { Name: subcategory, categoryId: (newcat === null || newcat === void 0 ? void 0 : newcat.id) || 0 } });
+            }
         }
-        if (!subcat) {
-            const newsubcat = await prisma.subcategory.create({ data: { Name: subcategory, categoryId: (cat === null || cat === void 0 ? void 0 : cat.id) || 0 } });
+        else {
+            if (!subcat) {
+                const newsubcat = await prisma.subcategory.create({ data: { Name: subcategory, categoryId: cat.id } });
+            }
         }
-        const product = await prisma.product.create({ data: { Name: name, Description: description, Price: price, Category: category, Subcategory: subcategory, type: type, imageURL: image } });
+        const product = await prisma.product.create({ data: { Name: name, Description: description, Price: 10, Category: category, Subcategory: subcategory, type: type, imageURL: image } });
         res.status(200).send({ Check: true, msg: "Product Added Successfully" });
     }
     catch (error) {
