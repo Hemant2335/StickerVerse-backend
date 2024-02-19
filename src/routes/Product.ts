@@ -30,7 +30,7 @@ router.post("/item/addtocart", Authentication, async (req, res) => {
         .send({ Check: true, msg: "Added to Cart Successfully" });
     } else {
       const cart = await prisma.cart.create({data : {
-        user: user,
+        userId: user,
         type: type,
         name: name,
         price: price,
