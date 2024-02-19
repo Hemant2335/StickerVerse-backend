@@ -21,7 +21,7 @@ router.post("/addorder", Middleware_1.Authentication, async (req, res) => {
                 status,
                 type,
                 address,
-                user: req.body.user.id,
+                userId: req.body.user.id,
             } });
         res.json(order);
     }

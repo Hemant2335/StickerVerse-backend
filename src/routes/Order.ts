@@ -19,7 +19,7 @@ router.post("/addorder", Authentication, async (req, res) => {
       status,
       type,
       address,
-      user: req.body.user.id,
+      userId: req.body.user.id,
     }})
     res.json(order);
   } catch (error) {
