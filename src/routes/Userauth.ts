@@ -6,9 +6,13 @@ import { Authentication , ValidateAuthinput } from "../middlewares/Middleware";
 import nodemailer from "nodemailer";
 import { PrismaClient } from "@prisma/client";
 import {Response , Request , Router} from "express";
+import {OAuth2Client} from "google-auth-library";
+const client = new OAuth2Client();
 const prisma = new PrismaClient();
 const jwtsecret : Secret = env.JWT_SECRET || "";
 const router = Router();
+
+
 // Signup Endpoint , No authentication required
 router.post("/signup", ValidateAuthinput, async (req: Request, res : Response) => {
   try {
@@ -236,5 +240,68 @@ router.post("/updatephone", Authentication, async (req: Request, res : Response)
       .json({ Check: false, Msg: "Error Updating the Phone Number" });
   }
 });
+
+// Google Auth Endpoint
+
+router.post("/googlelogin", async (req: Request, res : Response) => {
+  const { tokenId } = req.body;
+  console.log(tokenId)
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: tokenId,
+      audience: "551918395782-v17s3h8ts05grojf189484cbm816ivnr.apps.googleusercontent.com",
+    });
+    const payload = ticket.getPayload();
+    const { email_verified, name, email } = payload as any;
+    console.log(email_verified , name , email);
+    if (email_verified) {
+      const user = await prisma.user.findUnique({where : {Email : email}}) ;
+      if (user) {
+        const token = jwt.sign(
+          { Email: email, isAdmin: user.isAdmin },
+          jwtsecret
+        );
+        return res.status(200).json({
+          Success: true,
+          Message: token,
+          isAdmin: user.isAdmin,
+          Name: user.Name,
+        });
+      } else {
+        const Newuser = await prisma.user.create({
+          data: {
+            Name: name,
+            Email: email,
+            Password: "",
+            Salt: "",
+            isAdmin: false,
+            Address: null,
+            Phone: null,
+          }
+        });
+        const token = jwt.sign(
+          { Email: email, isAdmin: Newuser.isAdmin },
+          jwtsecret
+        );
+        return res.status(200).json({
+          Success: true,
+          Message: token,
+          isAdmin: Newuser.isAdmin,
+          Name: Newuser.Name,
+        });
+      }
+    } else {
+      return res.status(400).json({
+        Success: false,
+        Message: "Email not verified",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({Success : false , Message : "Internal Server Error"});
+    console.log(error);
+  }
+  
+});
+
 
 module.exports = router;
