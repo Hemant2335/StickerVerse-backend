@@ -48,7 +48,7 @@ router.post("/item/addtocart", Authentication, async (req, res) => {
 
 router.get("/item/cart", Authentication, async (req, res) => {
   try {
-    const cart = await prisma.cart.findFirst({where : {userId : req.body.user.id}}) ;
+    const cart = await prisma.cart.findMany({where : {userId : req.body.user.id}}) ;
     console.log(cart);
     res.status(200).send(cart);
   } catch (error) {
