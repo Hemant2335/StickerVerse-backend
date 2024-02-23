@@ -10,7 +10,7 @@ const PORT = 5000;
 // For body Parsing
 app.use(express_1.default.json());
 app.use((0, cors_1.default)({
-    origin: ['https://theprintfrontend.vercel.app', "http://localhost:3000"] // Allowed domains 
+    origin: ['https://onlystickerverse.vercel.app/', "http://localhost:3000"] // Allowed domains 
 }));
 // Global Catches
 app.use((err, req, res, next) => {
