@@ -7,7 +7,7 @@ const PORT = 5000;
 // For body Parsing
 app.use(express.json());
 app.use(cors({
-  origin: ['https://onlystickerverse.vercel.app/' , "http://localhost:3000"]// Allowed domains 
+  origin: ['https://onlystickerverse.vercel.app' , "http://localhost:3000"]// Allowed domains 
 }));
 
 // Global Catches
