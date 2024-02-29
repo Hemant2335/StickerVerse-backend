@@ -117,10 +117,10 @@ router.get("/all/filter", async (req, res) => {
             Subcategory: "",
             type: ""
         };
-        if (catname) {
+        if (catname.length > 1) {
             query.Category = catname;
         }
-        if (Subcatname) {
+        if (Subcatname.length > 1) {
             query.Subcategory = Subcatname;
         }
         if (type) {
