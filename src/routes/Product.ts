@@ -102,30 +102,22 @@ router.get("/all/Category", async (req, res) => {
   }
 });
 
-interface query{
-  Category : string,
-  Subcategory : string,
-  type : string,
-}
+
 
 router.get("/all/filter", async (req, res) => {
   try {
     const catname = req.query.category as string;
     const Subcatname = req.query.subcategory as string;
     const type = req.query.type as string;
-    const query : query = {
-      Category: "",
-      Subcategory: "",
-      type: ""
-    };
+    let query : {[key : string] : string}  = {};
     if (catname.length > 1) {
-      query.Category = catname;
+      query['Category'] = catname;
     }
     if (Subcatname.length > 1) {
-      query.Subcategory = Subcatname;
+      query['Subcategory'] = Subcatname;
     }
     if (type) {
-      query.type = type;
+      query['type'] = type;
     }
     console.log(query);
     const cat = await prisma.product.findMany({where : query}) ;
