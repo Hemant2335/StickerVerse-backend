@@ -126,6 +126,7 @@ router.get("/all/filter", async (req, res) => {
         if (type) {
             query.type = type;
         }
+        console.log(query);
         const cat = await prisma.product.findMany({ where: query });
         res
             .status(200)
