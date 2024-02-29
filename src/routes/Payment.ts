@@ -1,6 +1,5 @@
 import express from "express";
 const router = express.Router();
-import axios from "axios";
 const Razorpay = require("razorpay");
 require("dotenv").config();
 import { Authentication } from "../middlewares/Middleware";
