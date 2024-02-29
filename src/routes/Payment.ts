@@ -1,5 +1,6 @@
 import express from "express";
 const router = express.Router();
+import axios from "axios";
 const Razorpay = require("razorpay");
 require("dotenv").config();
 import { Authentication } from "../middlewares/Middleware";
@@ -10,7 +11,26 @@ const razorpay = new Razorpay({
   key_secret: process.env.RAZOR_PAY_API_SECRET,
 });
 
-// Generate Invoice route
+
+// Send the Invoice through Email
+router.get("/invoice/:id", Authentication, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const response = await fetch(`https://api.razorpay.com/v1/invoices/${id}` , {
+      method : "GET",
+      headers :{
+        Authorization : `Basic ${process.env.RAZOR_PAY_API_Auth}` || ""
+      }
+    })
+    const data = await response.json();
+    res.status(200).json({Success : true , url : data.short_url});
+  } catch (error) {
+    res.send("Cannot able to send Reciept")
+  }
+});
+
+
+// Generate Payment route
 
 router.post("/invoice",Authentication,async (req, res) => {
   const { items ,email , name, address ,phone } = req.body;
@@ -41,8 +61,8 @@ router.post("/invoice",Authentication,async (req, res) => {
         },
       },
       line_items: items,
-      sms_notify: 1,
-      email_notify: 1,
+      sms_notify: 0,
+      email_notify: 0,
       currency: "INR",
     };
     const response = await razorpay.invoices.create(options);
